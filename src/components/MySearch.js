@@ -21,19 +21,22 @@ const MySearch = () => {
   
     const fetchByWord = (e) => {
       // e.preventDefault()
-      // let path = `&q=${query}`;
-      // dispatch(fetchForecastData(path));
+      // let path = `&q=${query}`
+      // dispatch(fetchForecastData(path))
       return
     };
 
-    const fetchCities = (e) => {
-      e.preventDefault()
-      dispatch(fetchCitiesData())
-    }
-
     useEffect(() => {
-      // fetchCities()
-    }, [])
+      const delayDebounceFn = setTimeout(() => {
+        if(query){
+          if(query.trim()!==''){
+          console.log(query)
+          dispatch(fetchCitiesData(query))}
+        }
+      }, 1000)
+  
+      return () => clearTimeout(delayDebounceFn)
+    }, [query])
     
   return (
     <Paper
@@ -51,11 +54,13 @@ const MySearch = () => {
         inputProps={{ 'aria-label': 'search google maps' }}
         type='text'
         value={query}
-        onChange={(e) => {
-          setQuery(e.target.value);
-        }}
+        onChange={
+          (e) => {
+          setQuery(e.target.value)
+        }
+      }
       />
-      <IconButton type="submit"  aria-label="search"  onClick={fetchCities}>
+      <IconButton type="submit"  aria-label="search" >
         <LocationOnIcon />
       </IconButton>
     </Paper>

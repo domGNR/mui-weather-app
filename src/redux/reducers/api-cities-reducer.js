@@ -43,7 +43,7 @@ const apiSlice = createSlice({
 
 const {startLoading,stopLoading,saveData,catchError,cleanError} = apiSlice.actions
 
-export const fetchData  = () => async(dispatch,getState) => {
+export const fetchData  = (inputValue) => async(dispatch,getState) => {
     dispatch(startLoading())
     dispatch(cleanError())
     // try { 
@@ -53,15 +53,25 @@ export const fetchData  = () => async(dispatch,getState) => {
     // catch(error){
     //     dispatch(catchError(['Errore nel caricamento']))
     // }
-    axios
-    .request(geoDbOptions)
-    .then(function (response) {
-    dispatch(saveData(response.data))
-    })
-    .catch(function (error) {
-        dispatch(catchError([error()]))
-    });
+    // const newUrl = geoDbOptions.url +``
+    // axios
+    // .request(geoDbOptions)
+    // .then(function (response) {
+    // dispatch(saveData(response.data))
+    // })
+    // .catch(function (error) {
+    //     dispatch(catchError([error()]))
+    // });
+
+    try {
+        const response = await geoDbInstance.get(`?namePrefix=${inputValue}`)
+        dispatch(saveData(response.data))
+      } catch (error) {
+        dispatch(catchError([error]))
+      }
     stopLoading()
+
+
 }
 
 export {cleanError,catchError}

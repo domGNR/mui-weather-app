@@ -10,23 +10,26 @@ export const owInstance = axios.create({
   // },
 });
 
-// export  const geoDbInstance = axios.create({
-//     method: 'GET',
-//     baseUrlurl: 'https://wft-geo-db.p.rapidapi.com/v1/geo/cities',
-//     headers: {
-//       'X-RapidAPI-Key': '07c760a14cmshbbdc1bbc363fc25p129f46jsn5742af7b41e2',
-//       'X-RapidAPI-Host': 'wft-geo-db.p.rapidapi.com'
-//     }
-//   });
+export const geoDbInstance = axios.create({
+  baseURL: "https://wft-geo-db.p.rapidapi.com/v1/geo/cities",
+  // params: {namePrefixDefaultLangResults: 'true'},
+  params: {sort: '+countryCode=it'},
+  headers: {
+    "X-RapidAPI-Key": "07c760a14cmshbbdc1bbc363fc25p129f46jsn5742af7b41e2",
+    "X-RapidAPI-Host": "wft-geo-db.p.rapidapi.com",
+  },
+});
 
 export const geoDbOptions = {
   method: "GET",
-  url: "https://wft-geo-db.p.rapidapi.com/v1/geo/cities",
+  url: "https://wft-geo-db.p.rapidapi.com/v1/geo",
   headers: {
     "X-RapidAPI-Key": "07c760a14cmshbbdc1bbc363fc25p129f46jsn5742af7b41e2",
     "X-RapidAPI-Host": "wft-geo-db.p.rapidapi.com",
   },
 };
+
+export const GEO_API_URL = "https://wft-geo-db.p.rapidapi.com/v1/geo";
 
 // export const geoDbInstance = () => {
 //   axios
