@@ -1,5 +1,5 @@
 import {createSlice} from '@reduxjs/toolkit'
-import {geoDbInstance,geoDbOptions} from '../../api'
+import {geoDbInstance,geoDbOptions,GEO_API_URL} from '../../api'
 import axios from 'axios'
 
 
@@ -46,29 +46,38 @@ const {startLoading,stopLoading,saveData,catchError,cleanError} = apiSlice.actio
 export const fetchData  = (inputValue) => async(dispatch,getState) => {
     dispatch(startLoading())
     dispatch(cleanError())
-    // try { 
-    //     const response = await geoDbInstance.get()
-    //     dispatch(saveData(response.data))
-    // }
-    // catch(error){
-    //     dispatch(catchError(['Errore nel caricamento']))
-    // }
-    // const newUrl = geoDbOptions.url +``
-    // axios
-    // .request(geoDbOptions)
-    // .then(function (response) {
-    // dispatch(saveData(response.data))
-    // })
-    // .catch(function (error) {
-    //     dispatch(catchError([error()]))
-    // });
 
-    try {
-        const response = await geoDbInstance.get(`?namePrefix=${inputValue}`)
-        dispatch(saveData(response.data))
-      } catch (error) {
-        dispatch(catchError([error]))
-      }
+    // try {
+    //     return fetch(`${GEO_API_URL}/cities?namePrefix=${inputValue}`, geoDbOptions)
+    //     .then((response) => response.json())
+    //     .then((response) => {
+    //       return {
+    //         options: response.data.map((city) => {
+    //           return {
+    //             value: `${city.latitude} ${city.longitude}`,
+    //             label: `${city.name}, ${city.countryCode}`,
+    //           };
+    //         }),
+    //       };
+    //     });
+    // }
+    // catch {
+
+    // }
+    // try {
+    //     const response = await geoDbInstance.get(`?namePrefix=${inputValue}`)
+    //     dispatch(saveData(
+    //         response.data.data.map(el=>{
+    //             return {
+    //                 value: `${el.latitude} ${el.longitude}`,
+    //                 label: `${el.name}, ${el.countryCode}`,
+    //               };
+    //         })
+    //     ))
+    //     // console.log()
+    //   } catch (error) {
+    //     dispatch(catchError([error]))
+    //   }
     stopLoading()
 
 

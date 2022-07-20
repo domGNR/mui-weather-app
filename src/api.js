@@ -13,7 +13,7 @@ export const owInstance = axios.create({
 export const geoDbInstance = axios.create({
   baseURL: "https://wft-geo-db.p.rapidapi.com/v1/geo/cities",
   // params: {namePrefixDefaultLangResults: 'true'},
-  params: {sort: '+countryCode=it'},
+  params: {sort: '-countryCode'},
   headers: {
     "X-RapidAPI-Key": "07c760a14cmshbbdc1bbc363fc25p129f46jsn5742af7b41e2",
     "X-RapidAPI-Host": "wft-geo-db.p.rapidapi.com",

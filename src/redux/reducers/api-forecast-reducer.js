@@ -5,10 +5,15 @@ import {owInstance} from '../../api'
 
 const initialState = {
     query:{
-        query:'',
+        query:{
+            lat:'',
+            lon:'',
+            label:'',
+        },
         path:'',
-        type:'',
     },
+    deg:'C',
+    favList:[],
     loading:false,
     error:{
         status:false,
@@ -26,18 +31,24 @@ const apiSlice = createSlice({
     reducers: {
         startLoading: (state) =>{
             state.loading = true
-            state.forecasts = []
+            state.forecasts = {}
         },
         stopLoading: (state) =>{
             state.loading = false
         },
-        saveData:(state,action) =>{
+        saveData:(state,action) => {
             state.forecasts = action.payload
+        },
+        saveQuery:(state,action) => {
+            state.query.query = action.payload
+        },
+        saveDeg:(state,action) => {
+            state.deg = action.payload
         },
         catchError:(state,action) =>{
             state.error.status = true
             state.error.message = action.payload
-            state.forecasts = []
+            state.forecasts = {}
         },
         cleanError: (state) => {
             state.error.status = false
@@ -47,9 +58,9 @@ const apiSlice = createSlice({
     },
 })
 
-const {startLoading,saveData,stopLoading,cleanError,catchError} = apiSlice.actions
+const {startLoading,saveData,stopLoading,cleanError,catchError,saveQuery,saveLabel,saveDeg} = apiSlice.actions
 const {reducer} = apiSlice
-export {cleanError,catchError}
+export {cleanError,catchError,saveQuery,saveLabel,saveDeg}
 
 export const fetchData = (path) => async (dispatch,getState) => {
     dispatch(startLoading())
@@ -59,8 +70,7 @@ export const fetchData = (path) => async (dispatch,getState) => {
         dispatch(saveData(response.data))
     } catch (error) {
         dispatch(catchError(['Nessun risultato per il termine ricercato']))
-    }
-    
+    }    
     dispatch(stopLoading())
 }
 

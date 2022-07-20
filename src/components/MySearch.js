@@ -1,70 +1,65 @@
-import {useState,useEffect} from 'react'
-import {Paper,InputBase,Divider,IconButton} from '@mui/material';
-// import MenuIcon from '@mui/icons-material/Menu';
-import SearchIcon from '@mui/icons-material/Search';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
+import { useState, useEffect } from "react";
+import {
+  Paper,
+  InputBase,
+  Select,
+  Autocomplete,
+  Divider,
+  IconButton,
+  TextField,
+} from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
+import MyAutocomplete from "./MyAutocomplete";
+import GpsFixedIcon from '@mui/icons-material/GpsFixed';
+import {saveQuery} from '../redux/reducers/api-forecast-reducer'
 
 // redux
-import {
-  fetchData as fetchForecastData,
-} from "../redux/reducers/api-forecast-reducer";
-
-import {
-  fetchData as fetchCitiesData,
-} from "../redux/reducers/api-cities-reducer";
-
+import { fetchData as fetchForecastData } from "../redux/reducers/api-forecast-reducer";
 import { useDispatch, useSelector } from "react-redux";
 
+
 const MySearch = () => {
-    const dispatch = useDispatch();
-    const [query, setQuery] = useState();
-  
-    const fetchByWord = (e) => {
-      // e.preventDefault()
-      // let path = `&q=${query}`
-      // dispatch(fetchForecastData(path))
-      return
-    };
+  const {query:{query}} = useSelector((state) => state.forecast)
+  const {forecasts} = useSelector((state) => state.forecast)
 
-    useEffect(() => {
-      const delayDebounceFn = setTimeout(() => {
-        if(query){
-          if(query.trim()!==''){
-          console.log(query)
-          dispatch(fetchCitiesData(query))}
-        }
-      }, 1000)
+  const dispatch = useDispatch();
+
+  const fetchByCoords = (e) => {
+      e.preventDefault()
+    if(query.lat || query.lon){
+      let path = `&lat=${query.lat}&lon=${query.lon}`
+      dispatch(fetchForecastData(path))
+    }
+    else alert('Inserire una città o geolocalizzarsi')
+  };
   
-      return () => clearTimeout(delayDebounceFn)
-    }, [query])
-    
+ const success =  (pos) => {
+  const value = {lat:Math.round(pos.coords.latitude),lon:Math.round(pos.coords.longitude)} 
+  dispatch(saveQuery(value))
+  dispatch(fetchForecastData(`&lat=${value.lat}&lon=${value.lon}`))
+  return value
+ }
+
+
   return (
-    <Paper
-      component="form"
-      type='submit'
-      onSubmit={fetchByWord}
-      sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}
-    >
-      <IconButton sx={{ p: '10px' }} aria-label="menu" onClick={fetchByWord}>
-        <SearchIcon />
-      </IconButton>
-      <InputBase
-        sx={{ ml: 1, flex: 1 }}
-        placeholder="Search Google Maps"
-        inputProps={{ 'aria-label': 'search google maps' }}
-        type='text'
-        value={query}
-        onChange={
-          (e) => {
-          setQuery(e.target.value)
-        }
-      }
-      />
-      <IconButton type="submit"  aria-label="search" >
-        <LocationOnIcon />
-      </IconButton>
-    </Paper>
+    <>
+      <Paper
+        component="form"
+        // type="submit"
+        // onSubmit={fetchByCoords}
+        sx={{ p: "2px 4px", display: "flex", alignItems: "center", width: 400 }}
+      >
+        <IconButton sx={{ p: "10px" }} aria-label="menu" onClick={fetchByCoords}>
+          <SearchIcon />
+        </IconButton>
+      <MyAutocomplete />
+        <IconButton aria-label="search" onClick={() =>  {
+          navigator.geolocation.getCurrentPosition(success)}}>
+          <GpsFixedIcon />
+        </IconButton>
+      </Paper>
+    </>
   );
-}
+};
 
-export default MySearch
+export default MySearch;

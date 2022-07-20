@@ -6,20 +6,39 @@ import {
   Typography,
   Button,
   Divider,
-  InputBase,
-  Tabs,
-  Tab,
+  ToggleButtonGroup,
+  ToggleButton
 } from "@mui/material";
 import MySearch from "./MySearch";
 import MyNavbar from "./MyNavbar";
 import Today from "./Today";
-import {useState} from 'react'
+import { useState, useEffect } from "react";
 import MoreOn from "./MoreOn";
-
+import { useDispatch, useSelector } from "react-redux";
+import {saveDeg} from '../redux/reducers/api-forecast-reducer'
 
 
 const MyPaper = () => {
+  const dispatch = useDispatch()
+  const {deg} = useSelector((state) => state.forecast)
+  const [label, setLabel] = useState();
 
+  const handleChange = (e,newDegree) => {
+    if(newDegree!==null){
+    dispatch(saveDeg(newDegree))
+    localStorage.setItem('last-degree', newDegree) 
+  }
+  }
+  const {
+    query: { query },
+    forecasts,
+  } = useSelector((state) => state.forecast);
+
+  useEffect(() => {
+    if (forecasts?.city?.name !== undefined) {
+      setLabel(forecasts?.city?.name + ", " + forecasts?.city?.country);
+    } else return;
+  }, [forecasts]);
 
   return (
     <Container>
@@ -40,8 +59,24 @@ const MyPaper = () => {
           >
             <Container>
               <Stack mt={2} justifyContent="space-between" direction="row">
-                <Box>forecast</Box>
-                <Box>city</Box>
+                <Box>
+                  <ToggleButtonGroup
+                    sx={{border:'#1px solid rgba(23, 96, 165, 0.5)'}}
+                    color="primary"
+                    size="small"
+                    value={localStorage.getItem('last-degree') || deg}
+                    exclusive
+                    onChange={handleChange}
+                    variant='outlined'
+                  >
+                    <ToggleButton value="K" sx={{border:'1px solid rgba(23, 96, 165, 0.5)'}}>K°</ToggleButton>
+                    <ToggleButton value="C" sx={{border:'1px solid rgba(23, 96, 165, 0.5)'}}>C°</ToggleButton>
+                    <ToggleButton value="F" sx={{border:'1px solid rgba(23, 96, 165, 0.5)'}}>F°</ToggleButton>
+                  </ToggleButtonGroup>
+                </Box>
+                <Box>
+                  <Button variant="outlined">{label || "city"}</Button>
+                </Box>
               </Stack>
               <Box
                 sx={{
@@ -70,17 +105,24 @@ const MyPaper = () => {
               borderBottomRightRadius: "5%",
               flex: 1,
               minHeight: 600,
-              display:'flex',
-              flexDirection:'column',
+              display: "flex",
+              flexDirection: "column",
             }}
-          > 
+          >
             <Container>
               <MyNavbar />
             </Container>
-            <Today />
-            <MoreOn/>
+            {forecasts?.cod === "200" ? (
+              <>
+                <Today />
+                <MoreOn />
+              </>
+            ) : (
+              <Container sx={{ m: 5 }}>
+                <Typography variant="h3">No data yet</Typography>{" "}
+              </Container>
+            )}
           </Box>
-          
         </Stack>
       </Paper>
     </Container>
