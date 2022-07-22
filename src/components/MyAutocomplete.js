@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import CircularProgress from "@mui/material/CircularProgress";
-import { fetchData as fetchCitiesData } from "../redux/reducers/api-cities-reducer";
 import { useDispatch, useSelector } from "react-redux";
 import { GEO_API_URL, geoDbOptions } from "../api";
 import {saveQuery} from '../redux/reducers/api-forecast-reducer'

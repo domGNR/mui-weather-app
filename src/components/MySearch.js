@@ -45,8 +45,6 @@ const MySearch = () => {
     <>
       <Paper
         component="form"
-        // type="submit"
-        // onSubmit={fetchByCoords}
         sx={{ p: "2px 4px", display: "flex", alignItems: "center", width: 400 }}
       >
         <IconButton sx={{ p: "10px" }} aria-label="menu" onClick={fetchByCoords}>
