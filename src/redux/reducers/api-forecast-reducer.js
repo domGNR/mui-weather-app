@@ -124,7 +124,6 @@ export const toggleFav = (item) => (dispatch, getState) => {
   
     if (favList.find((x) => x.id === item.id)) {
       dispatch(removeFromFav(item))
-      console.log('aaa')
       return
     }
     if (forecasts?.cod==='200'){ 

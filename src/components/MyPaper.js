@@ -30,12 +30,15 @@ const MyPaper = () => {
     query: { query },
     deg,
     forecasts,
-    forecasts: { cod },
+    forecasts: { cod, city },
   } = useSelector((state) => state.forecast);
 
   const [label, setLabel] = useState();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [checkFav, setCheckFav] = useState(false);
+  const open = Boolean(anchorEl);
 
-  const favs = getItemFromLocalStorage("fav-list");
+  const favs = getItemFromLocalStorage("fav-list") || [];
 
   const handleChange = (e, newDegree) => {
     if (newDegree !== null) {
@@ -43,18 +46,26 @@ const MyPaper = () => {
       setLocalStorageItem("last-degree", newDegree);
     }
   };
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
 
-  const handleItemClick = (e,el) => {
-    dispatch(fetchForecastData(`&lat=${e.lat}&lon=${e.lon}`))
-  }
+  const handleItemClick = (e, el) => {
+    dispatch(fetchForecastData(`&lat=${e.lat}&lon=${e.lon}`));
+  };
+
+  useEffect(() => {
+    if (favs?.filter((el) => el.id === city?.id).length > 0) {
+      setCheckFav(true);
+    } else {
+      setCheckFav(false);
+    }
+  }, [favs]);
 
   useEffect(() => {
     if (forecasts?.city?.name !== undefined) {
@@ -137,6 +148,8 @@ const MyPaper = () => {
                       >
                         <Checkbox
                           sx={{ p: 0 }}
+                          checked={checkFav}
+                          // onChange={() => handleCheck()}
                           size="small"
                           icon={
                             <Star
@@ -161,13 +174,18 @@ const MyPaper = () => {
                         "aria-labelledby": "basic-button",
                       }}
                     >
-                      {favs.map((el) => {
-                        return (
-                          <MenuItem onClick={()=>handleItemClick(el)} key={el.id}>
-                            {el.name}
-                          </MenuItem>
-                        );
-                      })}
+                      {favs.length > 0
+                        ? favs.map((el) => {
+                            return (
+                              <MenuItem
+                                onClick={() => handleItemClick(el)}
+                                key={el.id}
+                              >
+                                {el.name}
+                              </MenuItem>
+                            );
+                          })
+                        : ""}
                     </Menu>
                     {label || "Preferiti"}
                   </Button>
